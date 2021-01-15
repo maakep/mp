@@ -16,6 +16,9 @@ export default function App() {
           <ProtectedRoute exact path={'/'}>
             <MyPage />
           </ProtectedRoute>
+          <Route>
+            <div>404 not found :)</div>
+          </Route>
         </Switch>
       </BrowserRouter>
     </ProvideAuth>
