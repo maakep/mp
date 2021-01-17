@@ -1,11 +1,5 @@
-function root(input: string = ""): object {
-  // let root = "../../";
-  // if (input[0] !== "/") {
-  //   root += "/";
-  // }
-  // return root + input;
-
-  return { root: "./" };
+function root(input: string = ''): object {
+  return { root: './' };
 }
 
 export default root();

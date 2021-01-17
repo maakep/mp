@@ -16,7 +16,6 @@ export default function Login() {
   console.log(auth);
 
   function succ(res: GoogleLoginResponse | GoogleLoginResponseOffline) {
-    console.log('Logging in', res);
     auth.signin(res);
     const from = (location.state as any)?.from || { pathname: '/' };
     history.replace(from);

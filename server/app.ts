@@ -10,6 +10,10 @@ app.get('/*.(js|png)', (req, res) => {
   res.sendFile(req.url, root);
 });
 
+app.get('/members', (req, res) => {
+  res.send('endpoint to get all members in json');
+});
+
 app.get('/*', (req, res) => {
   res.sendFile('/index.html', root);
 });

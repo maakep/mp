@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { createContext, useContext, useState } from 'react';
+import { GoogleLoginResponse } from 'react-google-login';
 
 const authContext = createContext(null);
 
@@ -13,14 +14,14 @@ export const useAuth = () => {
 };
 
 function useProvideAuth() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<GoogleLoginResponse>(null);
 
-  const signin = (user: any) => {
+  const signin = (user: GoogleLoginResponse) => {
     setUser(user);
   };
 
   const signout = () => {
-    setUser(false);
+    setUser(null);
   };
 
   return { user, signin, signout };
