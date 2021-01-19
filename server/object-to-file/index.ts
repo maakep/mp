@@ -1,9 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+export type RepositoryObject = {
+  [email: string]: number;
+};
+
 export class ObjectToFile {
   fileName: string;
-  data: { [email: string]: number };
+  data: RepositoryObject;
 
   public constructor(fileName: string) {
     this.fileName = path.resolve(fileName + '.json');
@@ -22,6 +26,8 @@ export class ObjectToFile {
   }
 
   update(key: string, value: number): void {
+    if (value == null) value = 0;
+
     this.data[key] = value;
     this.sync();
   }

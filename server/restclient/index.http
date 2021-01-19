@@ -1,0 +1,8 @@
+POST http://localhost:3000/send
+Content-Type: application/json
+Cookie: SES_TOK=<token from google>
+
+{
+  "to": "asd.asd@gmail.com",
+  "points": 13
+}
