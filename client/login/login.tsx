@@ -17,8 +17,9 @@ export default function Login() {
 
   function loginSuccess(res: GoogleLoginResponse | GoogleLoginResponseOffline) {
     res = res as GoogleLoginResponse;
-    auth.signin(res);
-    setCookie(TokenSessionKey, res.getAuthResponse().id_token, 60);
+    const token = res.getAuthResponse().id_token;
+    auth.signin(token);
+    setCookie(TokenSessionKey, token, 60);
     const from = (location.state as any)?.from || { pathname: '/' };
     history.replace(from);
   }

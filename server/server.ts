@@ -39,17 +39,16 @@ export class Server {
       } catch (err) {
         console.error(err);
         return res.sendStatus(403);
-      } finally {
-        if (ticket == null) {
-          console.log('ticket is null');
-          return res.sendStatus(403);
-        }
+      }
+      if (ticket == null) {
+        console.log('ticket is null');
+        return res.sendStatus(403);
       }
       const payload = ticket.getPayload();
 
       const { to, points } = req.body;
-      console.log(req.body);
-      const success = this.repo.sendMemberPoints(payload.email, to, points);
+
+      const success = this.repo.trySendMemberPoints(payload.email, to, points);
       if (!success) {
         return res.sendStatus(402);
       }

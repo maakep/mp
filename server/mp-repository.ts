@@ -33,11 +33,13 @@ export class MpRepository {
     return points;
   }
 
-  sendMemberPoints(
+  trySendMemberPoints(
     fromEmail: string,
     toEmail: string,
     points: number
   ): boolean {
+    if (points < 0) return false;
+
     const success = this.removePoints(fromEmail, points);
     if (success) {
       this.addPoints(toEmail, points);
