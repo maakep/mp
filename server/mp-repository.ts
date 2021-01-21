@@ -23,7 +23,7 @@ export class MpRepository {
     return true;
   }
 
-  getMembers(): RepositoryObject {
+  getMemberAndPoints(): RepositoryObject {
     return this.otf.read();
   }
 

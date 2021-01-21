@@ -52,6 +52,39 @@ export class Server {
       }
       return res.sendStatus(200);
     });
+
+    app.post('/balance', async (req, res) => {
+      const token = req.cookies[TokenSessionKey];
+      if (token == null) {
+        return res.sendStatus(403);
+      }
+
+      let ticket = null;
+      try {
+        ticket = await this.googleVerificationClient.verifyIdToken({
+          idToken: token,
+          audience: keys.gOauthClientId,
+        });
+      } catch (err) {
+        console.error(err);
+        return res.sendStatus(403);
+      }
+      if (ticket == null) {
+        return res.sendStatus(403);
+      }
+      const payload = ticket.getPayload();
+
+      const points = this.repo.getMemberPoints(payload.email);
+      return res.status(200).send(points.toString());
+    });
+
+    app.post('/top', (req, res) => {
+      const toplist = this.repo.getMemberAndPoints();
+      const sortedToplist = Object.entries(toplist)
+        .sort(([, a], [, b]) => b - a)
+        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+      return res.status(200).json(sortedToplist);
+    });
   }
 }
 

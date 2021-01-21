@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
-import { post } from '../helpers/post';
+import { post } from '../helpers/postget';
 import { Input } from '../shared/input';
 import { sleep } from '../shared/sleep';
 import { Spinner } from '../shared/spinner';
