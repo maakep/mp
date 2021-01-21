@@ -26,7 +26,6 @@ export class Server {
     app.post('/send', async (req, res) => {
       const token = req.cookies[TokenSessionKey];
       if (token == null) {
-        console.log('Token is null');
         return res.sendStatus(403);
       }
 
@@ -41,7 +40,6 @@ export class Server {
         return res.sendStatus(403);
       }
       if (ticket == null) {
-        console.log('ticket is null');
         return res.sendStatus(403);
       }
       const payload = ticket.getPayload();

@@ -3,35 +3,39 @@ import { Route, BrowserRouter, Switch } from 'react-router-dom';
 import Login from './login/login';
 import ProtectedRoute from './login/protected-route';
 import { ProvideAuth } from './login/use-auth';
-import MyPage from './dashboard/my-page';
-import styled from 'styled-components';
-
-const Body = styled.div`
-  display: flex;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  background: grey;
-`;
+import { Balance } from './dashboard/balance';
+import { Header } from './layout/header';
+import { Body } from './layout/body';
+import { Footer } from './layout/footer';
+import { Transaction } from './dashboard/transaction';
+import { Top } from './dashboard/top';
 
 export default function App() {
   return (
-    <Body>
-      <ProvideAuth>
-        <BrowserRouter>
+    <ProvideAuth>
+      <BrowserRouter>
+        <Header />
+        <Body>
           <Switch>
             <Route path="/login">
               <Login />
             </Route>
             <ProtectedRoute exact path={'/'}>
-              <MyPage />
+              <Balance />
+            </ProtectedRoute>
+            <ProtectedRoute exact path={'/transfer'}>
+              <Transaction />
+            </ProtectedRoute>
+            <ProtectedRoute exact path={'/top'}>
+              <Top />
             </ProtectedRoute>
             <Route>
               <div>404 not found :)</div>
             </Route>
           </Switch>
-        </BrowserRouter>
-      </ProvideAuth>
-    </Body>
+        </Body>
+        <Footer />
+      </BrowserRouter>
+    </ProvideAuth>
   );
 }

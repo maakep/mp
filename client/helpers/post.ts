@@ -1,5 +1,5 @@
-export function post(url: string, body?: object) {
-  fetch(url, {
+export async function post(url: string, body?: object) {
+  return await fetch(url, {
     method: 'post',
     headers: new Headers({
       'Content-Type': 'application/json',

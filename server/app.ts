@@ -8,6 +8,7 @@ const app: express.Express = express();
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('assets'));
 
 app.get('/*.(js|png)', (req, res) => {
   res.sendFile(req.url, root);
