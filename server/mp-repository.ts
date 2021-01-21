@@ -29,7 +29,10 @@ export class MpRepository {
 
   getMemberPoints(email: string): number {
     let points = this.otf.read()[email];
-    if (points == null) points = 0;
+    if (points == null) {
+      points = 10;
+      this.otf.update(email, points);
+    }
     return points;
   }
 
