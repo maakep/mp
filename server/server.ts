@@ -6,7 +6,7 @@ import { OAuth2Client } from 'google-auth-library';
 import keys from '../api-keys-etc/keys';
 
 export class Server {
-  port = '3000';
+  port = '8080';
   server: http.Server;
   repo: MpRepository;
   googleVerificationClient: OAuth2Client;
