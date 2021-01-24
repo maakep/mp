@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "init": "npm i && npm run build && npm start",
-    "build": "npm run be.build && npm run fe.webpack",
+    "build": "npm run be.build && npm run fe.build",
     "be.build": "tsc",
     "fe.build": "webpack",
     "fe.watch": "webpack --watch",
-    "start": "npm run be.build && start http://localhost:8080 && node ./dist/server/server/server.js"
+    "start": "npm run be.build && start http://localhost:8080 && be.start",
+    "be.start": "node ./dist/server/server/server.js"
   },
   "author": "",
   "license": "ISC",
