@@ -1,4 +1,4 @@
-import { isAdmin } from './admin';
+import { isAdministrator } from './admin';
 import { ObjectToFile, RepositoryObject } from './object-to-file';
 
 export class MpRepository {
@@ -43,9 +43,10 @@ export class MpRepository {
     points: number,
     dontRemove: boolean = false
   ): boolean {
-    if (isNaN(points) || points < 0) return false;
+    const isAdmin = isAdministrator(fromEmail);
+    if (isNaN(points) || (points < 0 && !isAdmin)) return false;
 
-    const dontRemovePoints = isAdmin(fromEmail) && dontRemove;
+    const dontRemovePoints = isAdmin && dontRemove;
     let success = true;
 
     if (!dontRemovePoints) {

@@ -4,7 +4,7 @@ import { MpRepository } from './mp-repository';
 import { TokenSessionKey } from '../shared/constants';
 import { OAuth2Client } from 'google-auth-library';
 import keys from '../api-keys-etc/keys';
-import { isAdmin } from './admin';
+import { isAdministrator } from './admin';
 
 export class Server {
   port = '8080';
@@ -82,9 +82,9 @@ export class Server {
         return res.sendStatus(verificationResult.statusCode);
       }
 
-      const userIsAdmin = isAdmin(payload.email);
+      const isAdmin = isAdministrator(payload.email);
 
-      return res.sendStatus(userIsAdmin ? 200 : 403);
+      return res.sendStatus(isAdmin ? 200 : 403);
     });
   }
 

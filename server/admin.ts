@@ -1,5 +1,5 @@
 import { admins } from '../api-keys-etc/admins';
 
-export function isAdmin(email: string): boolean {
+export function isAdministrator(email: string): boolean {
   return admins.includes(email);
 }
