@@ -1,3 +1,4 @@
+import { isAdmin } from './admin';
 import { ObjectToFile, RepositoryObject } from './object-to-file';
 
 export class MpRepository {
@@ -15,7 +16,7 @@ export class MpRepository {
   removePoints(userEmail: string, points: number): boolean {
     const newPoints = this.getMemberPoints(userEmail) - points;
 
-    if (!isNaN(newPoints) && newPoints < 0) {
+    if (isNaN(newPoints) || newPoints < 0) {
       return false;
     }
 
@@ -39,11 +40,18 @@ export class MpRepository {
   trySendMemberPoints(
     fromEmail: string,
     toEmail: string,
-    points: number
+    points: number,
+    dontRemove: boolean = false
   ): boolean {
-    if (points < 0) return false;
+    if (isNaN(points) || points < 0) return false;
 
-    const success = this.removePoints(fromEmail, points);
+    const dontRemovePoints = isAdmin(fromEmail) && dontRemove;
+    let success = true;
+
+    if (!dontRemovePoints) {
+      success = this.removePoints(fromEmail, points);
+    }
+
     if (success) {
       this.addPoints(toEmail, points);
     }

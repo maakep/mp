@@ -23,3 +23,7 @@ export function getCookie(cookieName: string): string {
   }
   return '';
 }
+
+export function deleteCookie(cookieName: string) {
+  setCookie(cookieName, '', -10);
+}

@@ -7,6 +7,7 @@ import { Spinner } from '../shared/spinner';
 export type Transaction = {
   to: string;
   points: number;
+  dontRemove: boolean;
 };
 
 export function Balance() {

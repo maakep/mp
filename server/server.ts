@@ -4,6 +4,7 @@ import { MpRepository } from './mp-repository';
 import { TokenSessionKey } from '../shared/constants';
 import { OAuth2Client } from 'google-auth-library';
 import keys from '../api-keys-etc/keys';
+import { isAdmin } from './admin';
 
 export class Server {
   port = '8080';
@@ -25,28 +26,22 @@ export class Server {
   configureRouting() {
     app.post('/send', async (req, res) => {
       const token = req.cookies[TokenSessionKey];
-      if (token == null) {
-        return res.sendStatus(403);
+      const { to, points, dontRemove } = req.body;
+      const {
+        payload,
+        ...verificationResult
+      } = await this.verifyTokenAndGetPayload(token);
+
+      if (!verificationResult.success) {
+        return res.sendStatus(verificationResult.statusCode);
       }
 
-      let ticket = null;
-      try {
-        ticket = await this.googleVerificationClient.verifyIdToken({
-          idToken: token,
-          audience: keys.gOauthClientId,
-        });
-      } catch (err) {
-        console.error(err);
-        return res.sendStatus(403);
-      }
-      if (ticket == null) {
-        return res.sendStatus(403);
-      }
-      const payload = ticket.getPayload();
-
-      const { to, points } = req.body;
-
-      const success = this.repo.trySendMemberPoints(payload.email, to, points);
+      const success = this.repo.trySendMemberPoints(
+        payload.email,
+        to,
+        points,
+        dontRemove
+      );
       if (!success) {
         return res.sendStatus(402);
       }
@@ -55,24 +50,14 @@ export class Server {
 
     app.post('/balance', async (req, res) => {
       const token = req.cookies[TokenSessionKey];
-      if (token == null) {
-        return res.sendStatus(403);
-      }
+      const {
+        payload,
+        ...verificationResult
+      } = await this.verifyTokenAndGetPayload(token);
 
-      let ticket = null;
-      try {
-        ticket = await this.googleVerificationClient.verifyIdToken({
-          idToken: token,
-          audience: keys.gOauthClientId,
-        });
-      } catch (err) {
-        console.error(err);
-        return res.sendStatus(403);
+      if (!verificationResult.success) {
+        return res.sendStatus(verificationResult.statusCode);
       }
-      if (ticket == null) {
-        return res.sendStatus(403);
-      }
-      const payload = ticket.getPayload();
 
       const points = this.repo.getMemberPoints(payload.email);
       return res.status(200).send(points.toString());
@@ -85,8 +70,52 @@ export class Server {
         .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
       return res.status(200).json(sortedToplist);
     });
+
+    app.post('/admin', async (req, res) => {
+      const token = req.cookies[TokenSessionKey];
+      const {
+        payload,
+        ...verificationResult
+      } = await this.verifyTokenAndGetPayload(token);
+
+      if (!verificationResult.success) {
+        return res.sendStatus(verificationResult.statusCode);
+      }
+
+      const userIsAdmin = isAdmin(payload.email);
+
+      return res.sendStatus(userIsAdmin ? 200 : 403);
+    });
+  }
+
+  async verifyTokenAndGetPayload(token: string): Promise<VerificationPayload> {
+    if (token == null) {
+      return { success: false, statusCode: 403 };
+    }
+
+    let ticket = null;
+    try {
+      ticket = await this.googleVerificationClient.verifyIdToken({
+        idToken: token,
+        audience: keys.gOauthClientId,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    if (ticket == null) {
+      return { success: false, statusCode: 403 };
+    }
+
+    const payload = ticket.getPayload();
+    return { success: true, payload: payload };
   }
 }
+
+type VerificationPayload = {
+  success: boolean;
+  statusCode?: number;
+  payload?: any;
+};
 
 const repo = new MpRepository();
 const server = new Server(repo);

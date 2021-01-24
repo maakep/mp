@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { post } from '../helpers/postget';
 import { Input } from '../shared/input';
@@ -14,7 +14,18 @@ export function Transaction() {
   const [isLoading, setIsLoading] = useState<boolean>();
   const [error, setError] = useState<{ field: number; message: string }>();
 
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [removePoints, setRemovePoints] = useState<boolean>(false);
+
   const [success, setSuccess] = useState<boolean>(false);
+
+  useEffect(() => {
+    post('/admin').then((res) => {
+      if (res.status == 200) {
+        setIsAdmin(true);
+      }
+    });
+  }, []);
 
   async function onClickSend() {
     if (isNaN(+points)) {
@@ -28,6 +39,7 @@ export function Transaction() {
     const transaction: Transaction = {
       to: email,
       points: Math.abs(Number.parseFloat(points)),
+      dontRemove: removePoints,
     };
 
     setIsLoading(true);
@@ -80,6 +92,12 @@ export function Transaction() {
           setPoints(value);
         }}
       />
+      {isAdmin && (
+        <input
+          type="checkbox"
+          onChange={(e) => setRemovePoints(e.target.checked)}
+        />
+      )}
       <Error>{error?.message}</Error>
       <button onClick={onClickSend} disabled={isLoading}>
         {!isLoading ? 'Send' : <Spinner />}

@@ -9,7 +9,7 @@
     "be.build": "tsc",
     "fe.build": "webpack",
     "fe.watch": "webpack --watch",
-    "start": "npm run be.build && start http://localhost:3000 && node ./dist/server/server/server.js"
+    "start": "npm run be.build && start http://localhost:8080 && node ./dist/server/server/server.js"
   },
   "author": "",
   "license": "ISC",

@@ -1,6 +1,9 @@
 import * as React from 'react';
+import { useGoogleLogout } from 'react-google-login';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { deleteCookie } from '../helpers/cookie-helper';
+import { TokenSessionKey } from '../../shared/constants';
 
 const Wrapper = styled.div`
   background: black;
@@ -14,11 +17,16 @@ const Wrapper = styled.div`
 `;
 
 export function Header() {
+  function logout() {
+    deleteCookie(TokenSessionKey);
+    location.reload();
+  }
+
   return (
     <Wrapper>
-      <Link to={'/'}>
+      <div style={{ cursor: 'pointer' }} onClick={logout}>
         <img src="/mp2.png" height={50} />
-      </Link>
+      </div>
     </Wrapper>
   );
 }
