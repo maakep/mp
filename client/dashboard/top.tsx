@@ -23,7 +23,7 @@ export function Top() {
       {top ? (
         Object.keys(top).map((key, i) => {
           return (
-            <Row even={i % 2 == 0}>
+            <Row key={key} even={i % 2 == 0}>
               <Key>{key.replace('@gmail.com', '')}</Key>
               <Value>{top[key]}</Value>
             </Row>
