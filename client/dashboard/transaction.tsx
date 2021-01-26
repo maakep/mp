@@ -38,7 +38,7 @@ export function Transaction() {
 
     const transaction: Transaction = {
       to: email,
-      points: Math.abs(Number.parseFloat(points)),
+      points: Number.parseFloat(points),
       dontRemove: removePoints,
     };
 

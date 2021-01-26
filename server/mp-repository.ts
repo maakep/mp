@@ -16,10 +16,6 @@ export class MpRepository {
   removePoints(userEmail: string, points: number): boolean {
     const newPoints = this.getMemberPoints(userEmail) - points;
 
-    if (isNaN(newPoints) || newPoints < 0) {
-      return false;
-    }
-
     this.otf.update(userEmail, newPoints);
     return true;
   }
@@ -40,10 +36,11 @@ export class MpRepository {
   trySendMemberPoints(
     fromEmail: string,
     toEmail: string,
-    points: number,
+    pointsString: string,
     dontRemove: boolean = false
   ): boolean {
     const isAdmin = isAdministrator(fromEmail);
+    const points = parseFloat(pointsString);
     if (isNaN(points) || (points < 0 && !isAdmin)) return false;
 
     const dontRemovePoints = isAdmin && dontRemove;
