@@ -15,6 +15,10 @@ export class MpRepository {
 
   removePoints(userEmail: string, points: number): boolean {
     const newPoints = this.getMemberPoints(userEmail) - points;
+    
+    if (newPoints < 0) {
+      return false;
+    }
 
     this.otf.update(userEmail, newPoints);
     return true;
