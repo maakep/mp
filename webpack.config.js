@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = {
   mode: 'development',
   entry: {
-    app: './client/index.tsx',
+    app: '/client/index.tsx',
   },
   output: {
     filename: '[name].bundle.js',
