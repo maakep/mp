@@ -4,9 +4,7 @@ import styled from 'styled-components';
 import { post } from '../helpers/postget';
 import { Spinner } from '../shared/spinner';
 
-type Toplist = {
-  [email: string]: number;
-};
+type Toplist = { email: string, points: string }[];
 
 export function Top() {
   const [top, setTop] = useState<Toplist>();
@@ -21,11 +19,11 @@ export function Top() {
         <Value>MP</Value>
       </Row>
       {top ? (
-        Object.keys(top).map((key, i) => {
+        top.map((row, i) => {
           return (
-            <Row key={key} even={i % 2 == 0}>
-              <Key>{key.replace('@gmail.com', '')}</Key>
-              <Value>{top[key]}</Value>
+            <Row key={row.email} even={i % 2 == 0}>
+              <Key>{row.email.replace('@gmail.com', '')}</Key>
+              <Value>{row.points}</Value>
             </Row>
           );
         })

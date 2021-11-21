@@ -10,8 +10,8 @@
     "fe.build": "webpack",
     "fe.watch": "webpack --watch",
     "start": "npm run be.build && start http://localhost:8080 && npm run be.start",
-    "be.start": "node ./dist/server/server/server.js",
-    "host": "npm i && npm run be.build && npm run fe.build && be.start"
+    "be.start": "node dist/server/server/server.js",
+    "host": "npm i  && npm run fe.build && npm run be.build && npm run be.start"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +20,7 @@
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "google-auth-library": "^6.1.4",
+    "mongodb": "^4.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-google-login": "^5.2.2",

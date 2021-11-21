@@ -1,4 +1,3 @@
 export default {
-  gOauthClientId: process.env.gOauthClientId,
-  gOauthClientSecret: process.env.gOauthClientSecret,
+  gOauthClientId: '479033922055-oad150d28u35vg4ikllv0e2rt0g57gt9.apps.googleusercontent.com',
 };

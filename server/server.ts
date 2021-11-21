@@ -7,7 +7,7 @@ import keys from '../api-keys-etc/keys';
 import { isAdministrator } from './admin';
 
 export class Server {
-  port = '8080';
+  port = process.env.PORT || 8080;
   server: http.Server;
   repo: MpRepository;
   googleVerificationClient: OAuth2Client;
@@ -36,7 +36,7 @@ export class Server {
         return res.sendStatus(verificationResult.statusCode);
       }
 
-      const success = this.repo.trySendMemberPoints(
+      const success = await this.repo.trySendMemberPoints(
         payload.email,
         to,
         points,
@@ -59,15 +59,13 @@ export class Server {
         return res.sendStatus(verificationResult.statusCode);
       }
 
-      const points = this.repo.getMemberPoints(payload.email);
+      const points = await this.repo.getMemberPoints(payload.email);
       return res.status(200).send(points.toString());
     });
 
-    app.post('/top', (req, res) => {
-      const toplist = this.repo.getMemberAndPoints();
-      const sortedToplist = Object.entries(toplist)
-        .sort(([, a], [, b]) => b - a)
-        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+    app.post('/top', async (req, res) => {
+      const toplist = await this.repo.getAllMembersAndPoints();
+      const sortedToplist = toplist.sort((a, b) => b.points - a.points);
       return res.status(200).json(sortedToplist);
     });
 

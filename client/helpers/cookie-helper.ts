@@ -5,7 +5,7 @@ export function setCookie(
 ) {
   var d = new Date();
   d.setTime(d.getTime() + expireMinutes * 60 * 1000);
-  var expiresAndSameSite = 'SameSite=None;expires=' + d.toUTCString();
+  var expiresAndSameSite = 'expires=' + d.toUTCString();
   document.cookie = cookieName + '=' + cookieValue + ';' + expiresAndSameSite + ';path=/';
 }
 

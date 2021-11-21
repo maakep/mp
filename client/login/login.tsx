@@ -31,6 +31,8 @@ export default function Login() {
   return (
     <GoogleLogin
       clientId={keys.gOauthClientId}
+      cookiePolicy={'single_host_origin'}
+      responseType='code,token'
       onSuccess={loginSuccess}
       onFailure={loginFailure}
     />
