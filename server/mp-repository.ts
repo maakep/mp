@@ -8,7 +8,7 @@ type DbObjectInsert = {
   points: number;
 }
 
-const startingPoints = 10;
+const startingPoints = 1;
 
 
 export class MpRepository {
