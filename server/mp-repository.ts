@@ -1,50 +1,30 @@
 import { isAdministrator } from './admin';
 import { MongoClient, WithId } from 'mongodb';
-
-export type DbObject = WithId<DbObjectInsert>
-
-type DbObjectInsert = {
-  email: string;
-  points: number;
-}
-
-const startingPoints = 1;
-
+import * as database from './db/db';
+import { DbObject } from './db/db';
 
 export class MpRepository {
   client: MongoClient;
   cache: DbObject[] = [];
 
   constructor() {
-    const key = process.env.mongokey || require("../api-keys-etc/secret").mongokey;
-    this.client = new MongoClient(key);
+    const hour = 60*60*1000;
     this.refreshCache();
-  }
-
-  getCollection() {
-    const db = this.client.db('mp');
-    const collection = db.collection('points');
-    return collection;
+    setInterval(() => this.refreshCache(), 0.5*hour);
   }
 
   async refreshCache() {
     const res = await this.getAllMembersAndPoints();
     this.cache = res;
-    console.log(this.cache);
   }
 
   async getAllMembersAndPoints(): Promise<DbObject[]> {
-    await this.client.connect();
-    const db = this.client.db('mp');
-    const res = await db.collection('points').find({}).toArray();
-    await this.client.close();
-    return res as DbObject[];
+    const res = await database.getAllMembersAndPoints();
+    return res;
   }
 
   async addPoints(userEmail: string, points: number): Promise<boolean> {
-    const userPoints = await this.getMemberPoints(userEmail);
-    const newPoints = userPoints + points;
-    const success = await this.update(userEmail, newPoints);
+    const success = await this.update(userEmail, points);
     return success;
   }
 
@@ -56,26 +36,19 @@ export class MpRepository {
       return false;
     }
 
-    const success = await this.update(userEmail, newPoints);
+    const success = await this.update(userEmail, points);
     return success;
   }
 
-  async update(email: string, newPoints: number): Promise<boolean> {
-    await this.client.connect();
-    var col = this.getCollection();
-    const res = await col.findOneAndUpdate({email: email}, { $set: {points: newPoints}});
-    await this.client.close();
+  async update(email: string, pointsDiff: number): Promise<boolean> {
+    const success = await database.updatePoints(email, pointsDiff);
 
-    const success = res.ok == 1;
     if (success) {
-      this.cache.find(x => x.email == email).points = newPoints;
+      this.cache.find(x => x.email == email).points += pointsDiff;
     }
+
     return success;
   }
-
-  
-
-  
 
   async getMemberPoints(email: string): Promise<number> {
     const res = this.cache.find(x => x.email == email);
@@ -84,24 +57,14 @@ export class MpRepository {
       return res.points;
     } 
 
-    const user = await this.insertNewUser(email);
-    return user.points;
-  }
+    const {success, id, ...newUser} = await database.insertNewUser(email);
 
-  async insertNewUser(email: string): Promise<DbObjectInsert> {
-    const newUser: DbObjectInsert = {email: email, points: startingPoints};
-    await this.client.connect();
-    const col = this.getCollection();
-    const r = await col.insertOne(newUser)
-
-    if (!r.acknowledged) {
+    if (!success) {
       this.refreshCache();
     } else {
-      this.cache.push({...newUser, _id: r.insertedId});
+      this.cache.push({...newUser, _id: id});
     }
-    this.client.close();
-
-    return newUser;
+    return newUser.points;
   }
 
   async trySendMemberPoints(
