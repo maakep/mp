@@ -106,6 +106,9 @@ export class MpRepository {
 
     if (isUnique && isValid) {
       success = await database.updateUsername(email, username);
+      if (success) {
+        this.cache.find(x => x.email).username = username;
+      }
     }
 
     return {success: success, message: success ? "Username updated" : "Failed to update username" };
