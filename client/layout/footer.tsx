@@ -12,6 +12,7 @@ const InnerWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  flex-wrap: wrap;
 
   padding: 30px;
 `;
@@ -44,6 +45,12 @@ export function Footer() {
             <img src="/top.png" height={40} />
           </Link>
           [[ TOP ]]
+        </Column>
+        <Column>
+          <Link to={'/settings'}>
+            <img src="/top.png" height={40} />
+          </Link>
+          [[ SETTINGS ]]
         </Column>
       </InnerWrapper>
     </Wrapper>

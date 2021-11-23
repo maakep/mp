@@ -96,4 +96,16 @@ export class MpRepository {
 
     return removeSuccess && addSuccess;
   }
+
+  async updateUsername(email: string, username: string) {
+    const isUnique = this.cache.find(x => x.username.toLowerCase() == username.toLowerCase());
+    const isValid = username.match(/^[0-9a-zA-ZåäöÅÄÖ_]{3,17}$/);
+    let success = false;
+
+    if (isUnique && isValid) {
+      success = await database.updateUsername(email, username);
+    }
+
+    return {success: success, message: success ? "Username updated" : "Failed to update username" };
+  }
 }

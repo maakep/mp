@@ -9,6 +9,7 @@ import { Body } from './layout/body';
 import { Footer } from './layout/footer';
 import { Transaction } from './dashboard/transaction';
 import { Top } from './dashboard/top';
+import { Settings } from './dashboard/settings';
 
 export default function App() {
   return (
@@ -26,8 +27,11 @@ export default function App() {
             <ProtectedRoute exact path={'/transfer'}>
               <Transaction />
             </ProtectedRoute>
-            <ProtectedRoute exact path={'/top'}>
+            <Route exact path={'/top'}>
               <Top />
+            </Route>
+            <ProtectedRoute exact path={'/settings'}>
+              <Settings />
             </ProtectedRoute>
             <Route>
               <div>404 not found :)</div>

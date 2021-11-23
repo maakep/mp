@@ -84,6 +84,18 @@ export class Server {
 
       return res.sendStatus(isAdmin ? 200 : 403);
     });
+
+    app.post('/updateUsername', async (req, res) => {
+      const token = req.cookies[TokenSessionKey];
+      const { username } = req.body;
+      const {
+        payload,
+        ...verificationResult
+      } = await this.verifyTokenAndGetPayload(token);
+
+      const result = await this.repo.updateUsername(payload.email, username);
+      return res.status(result.success ? 200 : 403).json({result: result.message});
+    });
   }
 
   async verifyTokenAndGetPayload(token: string): Promise<VerificationPayload> {
