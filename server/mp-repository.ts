@@ -119,7 +119,7 @@ export class MpRepository {
     if (isUnique && isValid) {
       success = await database.updateUsername(email, username);
       if (success) {
-        this.cache.find(x => x.email).username = username;
+        this.cache.find(x => x.email == email).username = username;
       }
     }
 
