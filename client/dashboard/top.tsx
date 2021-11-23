@@ -28,7 +28,7 @@ export function Top() {
         top.map((row, i) => {
           return (
             <Row key={row.email} even={i % 2 == 0}>
-              <Key title={row.username}>{emojis[i] && emojis[i]} {(row.username || row.email).substr(0, 17)}</Key>
+              <Key title={row.username || row.email}>{emojis[i] && emojis[i]} {(row.username || row.email).substr(0, 17)}</Key>
               <Value title={row.points}>{row.points}</Value>
             </Row>
           );
