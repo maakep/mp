@@ -32,10 +32,6 @@ export function Transaction() {
       return setError({ field: 2, message: 'Please enter a number' });
     }
 
-    if (!email.includes('@gmail.com')) {
-      return setError({ field: 1, message: 'Please enter correct email' });
-    }
-
     const transaction: Transaction = {
       to: email,
       points: Number.parseFloat(points),

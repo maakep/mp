@@ -36,7 +36,7 @@ export class MpRepository {
       return false;
     }
 
-    const success = await this.update(userEmail, points);
+    const success = await this.update(userEmail, -points);
     return success;
   }
 
@@ -51,6 +51,8 @@ export class MpRepository {
   }
 
   async getMemberPoints(email: string): Promise<number> {
+    if (this.cache.length == 0) return 0;
+
     const res = this.cache.find(x => x.email == email);
     
     if (res != null) {
@@ -98,7 +100,7 @@ export class MpRepository {
   }
 
   async updateUsername(email: string, username: string) {
-    const isUnique = this.cache.find(x => x.username?.toLowerCase() == username.toLowerCase());
+    const isUnique = this.cache.find(x => x.username?.toLowerCase() == username.toLowerCase()) == undefined;
     const isValid = username.match(/^[0-9a-zA-ZåäöÅÄÖ_]{3,17}$/);
     let success = false;
 
