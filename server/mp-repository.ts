@@ -37,6 +37,9 @@ export class MpRepository {
       return false;
     }
 
+    if (isAccomplished())
+      return true;
+
     const success = await this.update(user, -points);
     return success;
   }
@@ -91,11 +94,11 @@ export class MpRepository {
     const points = parseFloat(pointsString);
     if (isNaN(points) || (points < 0 && !isAdmin)) return false;
 
-    const dontRemovePoints = isAdmin && dontRemove;
+    const removePoints = !(isAdmin && dontRemove);
     let removeSuccess = true;
     let addSuccess = true;
 
-    if (!dontRemovePoints || isAccomplished()) {
+    if (removePoints) {
       removeSuccess = await this.removePoints(fromUser, points);
     }
 
