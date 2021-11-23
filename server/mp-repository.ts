@@ -23,28 +23,28 @@ export class MpRepository {
     return res;
   }
 
-  async addPoints(userEmail: string, points: number): Promise<boolean> {
-    const success = await this.update(userEmail, points);
+  async addPoints(user: DbObject, points: number): Promise<boolean> {
+    const success = await this.update(user, points);
     return success;
   }
 
-  async removePoints(userEmail: string, points: number): Promise<boolean> {
-    const userPoints = await this.getMemberPoints(userEmail);
+  async removePoints(user: DbObject, points: number): Promise<boolean> {
+    const userPoints = await this.getMemberPoints(user.email);
     const newPoints =  userPoints - points;
     
     if (newPoints < 0) {
       return false;
     }
 
-    const success = await this.update(userEmail, -points);
+    const success = await this.update(user, -points);
     return success;
   }
 
-  async update(email: string, pointsDiff: number): Promise<boolean> {
-    const success = await database.updatePoints(email, pointsDiff);
+  async update(user: DbObject, pointsDiff: number): Promise<boolean> {
+    const success = await database.updatePoints(user.email, pointsDiff);
 
     if (success) {
-      this.cache.find(x => x.email.toLowerCase() == email?.toLowerCase()).points += pointsDiff;
+      user.points += pointsDiff;
     }
 
     return success;
@@ -70,12 +70,23 @@ export class MpRepository {
   }
 
   async trySendMemberPoints(
-    fromEmail: string,
-    toEmail: string,
+    fromAccount: string,
+    toAccount: string,
     pointsString: string,
     dontRemove: boolean = false
   ): Promise<boolean> {
-    const isAdmin = isAdministrator(fromEmail);
+
+    const fromUser = this.cache.find(x => x.email == fromAccount);
+
+    const toUser = toAccount.includes('@')
+      ? this.cache.find(x => x.email == toAccount)
+      : this.cache.find(x => x.username?.toLowerCase() == toAccount);
+
+    if (toUser == null) {
+      return false;
+    }
+
+    const isAdmin = isAdministrator(fromUser.email);
     const points = parseFloat(pointsString);
     if (isNaN(points) || (points < 0 && !isAdmin)) return false;
 
@@ -84,16 +95,16 @@ export class MpRepository {
     let addSuccess = true;
 
     if (!dontRemovePoints) {
-      removeSuccess = await this.removePoints(fromEmail, points);
+      removeSuccess = await this.removePoints(fromUser, points);
     }
 
     if (removeSuccess) {
-      addSuccess = await this.addPoints(toEmail, points);
+      addSuccess = await this.addPoints(toUser, points);
     }
 
     if (removeSuccess && !addSuccess) {
       // If this fails, your money is lost. Contact customer support LUL
-      await this.addPoints(fromEmail, points);
+      await this.addPoints(fromUser, points);
     }
 
     return removeSuccess && addSuccess;
@@ -111,6 +122,8 @@ export class MpRepository {
       }
     }
 
-    return {success: success, message: success ? "Username updated" : "Failed to update username" };
+    return {success: success, message: success 
+      ? "Username updated" 
+      : "Failed to update username, make sure it is unique, doesn't have abnormal characters and is between 3-17 characters" };
   }
 }

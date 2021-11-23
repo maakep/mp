@@ -47,7 +47,7 @@ export function Transaction() {
 
     if (!result.ok) {
       if (result.status == 402)
-        setError({ field: 0, message: 'Not enough MP' });
+        setError({ field: 0, message: 'Something went wrong' });
     } else {
       setSuccess(true);
     }

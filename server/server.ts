@@ -26,7 +26,7 @@ export class Server {
   configureRouting() {
     app.post('/send', async (req, res) => {
       const token = req.cookies[TokenSessionKey];
-      const { to, points, dontRemove } = req.body;
+      const { to: toUsernameOrEmail, points, dontRemove } = req.body;
       const {
         payload,
         ...verificationResult
@@ -38,7 +38,7 @@ export class Server {
 
       const success = await this.repo.trySendMemberPoints(
         payload.email,
-        to,
+        (toUsernameOrEmail as string)?.toLowerCase(),
         points,
         dontRemove
       );
