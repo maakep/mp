@@ -44,7 +44,7 @@ export class MpRepository {
     const success = await database.updatePoints(email, pointsDiff);
 
     if (success) {
-      this.cache.find(x => x.email == email).points += pointsDiff;
+      this.cache.find(x => x.email.toLowerCase() == email?.toLowerCase()).points += pointsDiff;
     }
 
     return success;
