@@ -2,6 +2,7 @@ import { isAdministrator } from './admin';
 import { MongoClient, WithId } from 'mongodb';
 import * as database from './db/db';
 import { DbObject } from './db/db';
+import { isAccomplished } from './loot-box';
 
 export class MpRepository {
   client: MongoClient;
@@ -94,7 +95,7 @@ export class MpRepository {
     let removeSuccess = true;
     let addSuccess = true;
 
-    if (!dontRemovePoints) {
+    if (!dontRemovePoints || isAccomplished()) {
       removeSuccess = await this.removePoints(fromUser, points);
     }
 
